@@ -3,19 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>這是我的簡單網站</title>
+    <title>酷炫煙火效果</title>
     <style>
         body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             font-family: Arial, sans-serif;
+            background-color: #0f2027;
+            background-image: linear-gradient(315deg, #0f2027 0%, #2c5364 74%);
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .container {
             text-align: center;
         }
+
         h1 {
-            color: #333;
+            font-size: 2em;
+            margin: 0;
+            overflow: hidden;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), hide-caret 0s step-end 3.5s forwards;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes hide-caret {
+            to { border-color: transparent; }
+        }
+
+        p {
+            font-size: 1.2em;
+            opacity: 0;
+            animation: fadeIn 2s ease 4s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 按鈕樣式 */
+        .firework-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #ff5722;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .firework-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* 煙火效果 */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #ffeb3b;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <h1>歡迎來到我的網站！</h1>
-    <p>這是一個簡單的靜態網站。同時是第三次修改的內容</p>
+    <div class="container">
+        <h1>歡迎來到我的酷炫網站</h1>
+        <p>讓創意點亮每一個頁面！</p>
+        <button class="firework-btn" onclick="launchFireworks()">點擊放煙火</button>
+    </div>
+
+    <script>
+        // 生成隨機顏色煙火
+        function randomColor() {
+            const colors = ['#ffeb3b', '#ff5722', '#8bc34a', '#2196f3', '#9c27b0'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // 煙火效果函數
+        function launchFireworks() {
+            const fireworkCount = 20; // 每次生成20個煙火粒子
+            const container = document.querySelector('.container');
+
+            for (let i = 0; i < fireworkCount; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.backgroundColor = randomColor();
+                firework.style.top = `${Math.random() * 50 + 40}%`;
+                firework.style.left = `${Math.random() * 100}%`;
+                firework.style.animationDelay = `${Math.random() * 0.5}s`;
+
+                container.appendChild(firework);
+
+                // 在動畫結束後移除煙火元素
+                firework.addEventListener('animationend', () => {
+                    firework.remove();
+                });
+            }
+        }
+    </script>
 </body>
 </html>
