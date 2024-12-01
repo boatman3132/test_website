@@ -1,3 +1,4 @@
+// 發送訊息的函數
 function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     if (userInput.trim() !== '') {
@@ -14,6 +15,7 @@ function sendMessage() {
     }
 }
 
+// 顯示訊息的函數
 function displayMessage(message, sender) {
     const chatBox = document.getElementById('chat-box');
     const messageElement = document.createElement('div');
@@ -25,3 +27,11 @@ function displayMessage(message, sender) {
     // 滾動到最新的消息
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// 監聽 'Enter' 鍵的按下事件，觸發訊息發送
+document.getElementById('user-input').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // 防止頁面刷新
+        sendMessage(); // 呼叫發送訊息的函數
+    }
+});
