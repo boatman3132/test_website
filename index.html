@@ -4,7 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>簡單回復網頁</title>
-    <link rel="stylesheet" href="styles.css"> <!-- 引入CSS檔案 -->
+    <style>
+        /* Your existing CSS styles remain unchanged */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .chat-box {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+        .input-box {
+            display: flex;
+            margin-top: 20px;
+        }
+        .input-box input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .input-box button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .input-box button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            text-align: right;
+            background-color: #d4edda;
+        }
+        .bot-message {
+            text-align: left;
+            background-color: #f8d7da;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -18,6 +84,58 @@
         </div>
     </div>
 
-    <script src="script.js"></script> <!-- 引入JavaScript檔案 -->
+    <script>
+        // Add an event listener for the "Enter" key to send message
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() !== '') {
+                // Display the user's message in the chat box
+                displayMessage(userInput, 'user');
+
+                // Clear the input field immediately
+                document.getElementById('user-input').value = '';
+
+                // Send the user's message to the backend (Node.js server)
+                try {
+                    const response = await fetch('http://localhost:3000/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: userInput })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Display the bot's response in the chat box
+                        displayMessage(data.reply, 'bot');
+                    } else {
+                        displayMessage("抱歉，發生錯誤，請稍後再試。", 'bot');
+                    }
+                } catch (error) {
+                    displayMessage("無法連接到服務器，請稍後再試。", 'bot');
+                    console.error("Error:", error);
+                }
+            }
+        }
+
+        function displayMessage(message, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+
+            // Scroll to the bottom of the chat box to show the latest message
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
 </body>
 </html>
